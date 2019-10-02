@@ -1,0 +1,93 @@
+/*!
+Theme Name: Educenter Child
+Theme URI: https://sparklewpthemes.com/wordpress-themes/educenter
+Author: Nicholas Goodridge
+Description: Educenter Child Theme
+Template: educenter
+Version: 1.1.2
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: educenter
+*/
+
+div.ed-breadcrumb {
+	
+	display: none;
+}
+
+div.container {
+
+    max-width: none;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+div.bottom-header, div.site-content{
+
+    max-width: 1264px;
+    align-content: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.main-container {
+ min-height: 100vh; /* will cover the 100% of viewport */
+ overflow: hidden;
+ display: block;
+ position: relative;
+ padding-bottom: 62px; /* height of your footer */
+}
+
+footer {
+
+ position: relative;
+ bottom: 0;
+ width: 100%;
+}
+
+div.banner-image img {
+    width: max-content;
+    max-width: 1920px;
+    max-height: 440px;
+    overflow: visible;
+    margin-left: -328px;
+}
+
+section.ed-about-us {
+
+    overflow: visible !important;
+}
+
+h1.site-title {
+
+    font-weight: bold;
+}
+
+div.row.about-site {
+
+    margin-top: 30px
+}
+
+div.about-title {
+
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    box-shadow: 2px 2px 2px 2px grey;
+    height: 100%;
+}
+
+div.about-title i.fa.fa-question-circle, div.about-title i.fas.fa-hands-helping {
+
+    font-size: 96px;
+}
+
+img.cardinal {
+
+    width: auto;
+    height: 96px;
+}
