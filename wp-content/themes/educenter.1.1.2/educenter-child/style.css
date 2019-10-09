@@ -91,3 +91,25 @@ img.cardinal {
     width: auto;
     height: 96px;
 }
+
+.wpforo-widget-wrap .wpf-widget-tags li span {
+
+    border: 1px solid #E0141E!important;
+    background-color: #E0141E!important;
+    color: #f3f3f3!important;
+}
+
+.wpforo-widget-wrap .wpf-widget-tags li a {
+    border-color: #E0141E!important;
+}
+
+p.postuser a {
+
+    color: #FF3333!important;
+}
+
+a.edit_profile {
+
+    color: #FF3333;
+    text-decoration: underline;
+}
