@@ -53,9 +53,41 @@ class EDUCENTER_CHILD_THEME {
         // If the profile user is a mentor, the currently logged in user is a mentee, and the profile being viewed isn't the logged in users profile, show the request mentor button
         if( $profile_user_mentor_role == 'Mentor' && $current_user_mentor_role == 'Mentee' && $user_id != $current_user_id ) {
 
+            // If sending a mentorship request
+            if( isset( $_POST['request_mentorship'] ) ) {
+
+                // Save request as user meta of the profile user with the current user id as the meta value
+                $request_sent = update_user_meta( $user_id, 'mentorship_requests', array( $current_user_id ) );
+
+                if( $request_sent ) {
+
+                    ?>
+
+                    <div class="alert alert-success alert-dismissible fade show"  >
+                        <p>Request sent!</p>
+                    </div>
+
+                    <?php
+
+                }
+                else {
+
+                    ?>
+
+                    <div class="alert alert-danger alert-dismissible fade show" >
+                        <p>Request sent!</p>
+                    </div>
+
+                    <?php
+
+                }
+            }
+
             ?>
 
-            <button class="request_mentorship" name="request_mentorship" id="request_mentorship" >Request Mentorship</button>
+            <form method="post" action="" >
+                <button class="request_mentorship" name="request_mentorship" id="request_mentorship" value="send_request" >Request Mentorship</button>
+            </form>
 
             <?php
 
