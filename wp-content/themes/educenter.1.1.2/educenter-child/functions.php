@@ -15,9 +15,6 @@ class EDUCENTER_CHILD_THEME {
 
         // Enqueue scripts/styles
         add_action( 'wp_enqueue_scripts', array( $this, 'wp_enqueue_scripts' ) );
-
-        // Add a new tab to the profile
-        add_filter( 'um_after_header_meta', array( $this, 'um_after_header_meta' ), 10, 2 );
     }
 
     //Enqueue scripts and styles
@@ -39,59 +36,6 @@ class EDUCENTER_CHILD_THEME {
             wp_get_theme()->get('Version')
         );
 
-    }
-
-    public function um_after_header_meta( $user_id, $args ) {
-
-        // Get the mentor role for the user of the profile being viewed
-        $profile_user_mentor_role = get_user_meta( $user_id, 'mentor_role', true);
-
-        // Get the mentor role for the logged in user
-        $current_user_id = get_current_user_id();
-        $current_user_mentor_role = get_user_meta( $current_user_id, 'mentor_role', true);
-
-        // If the profile user is a mentor, the currently logged in user is a mentee, and the profile being viewed isn't the logged in users profile, show the request mentor button
-        if( $profile_user_mentor_role == 'Mentor' && $current_user_mentor_role == 'Mentee' && $user_id != $current_user_id ) {
-
-            // If sending a mentorship request
-            if( isset( $_POST['request_mentorship'] ) ) {
-
-                // Save request as user meta of the profile user with the current user id as the meta value
-                $request_sent = update_user_meta( $user_id, 'mentorship_requests', array( $current_user_id ) );
-
-                if( $request_sent ) {
-
-                    ?>
-
-                    <div class="alert alert-success alert-dismissible fade show"  >
-                        <p>Request sent!</p>
-                    </div>
-
-                    <?php
-
-                }
-                else {
-
-                    ?>
-
-                    <div class="alert alert-danger alert-dismissible fade show" >
-                        <p>Request sent!</p>
-                    </div>
-
-                    <?php
-
-                }
-            }
-
-            ?>
-
-            <form method="post" action="" >
-                <button class="request_mentorship" name="request_mentorship" id="request_mentorship" value="send_request" >Request Mentorship</button>
-            </form>
-
-            <?php
-
-        }
     }
 
 }
