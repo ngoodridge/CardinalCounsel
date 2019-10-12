@@ -113,3 +113,15 @@ a.edit_profile {
     color: #FF3333;
     text-decoration: underline;
 }
+
+div.donate i {
+
+    font-size: 50px;
+    color: #E0141E;
+    margin-bottom: 10px;
+}
+
+div.donate-gift, div.donate-mail {
+
+    padding-right: 150px;
+}

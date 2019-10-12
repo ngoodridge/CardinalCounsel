@@ -27,7 +27,7 @@ class EDUCENTER_CHILD_THEME {
         wp_enqueue_style( 'bootstrap4', 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css' );
 
         // Enqueue FontAwesome library
-        wp_enqueue_style( 'font-awesome-free', '//use.fontawesome.com/releases/v5.2.0/css/all.css' );
+        wp_enqueue_style( 'font-awesome-free', '//use.fontawesome.com/releases/v5.3.0/css/all.css' );
 
         // Enqueue parent and child style sheet
         $parent_style = 'educenter';
