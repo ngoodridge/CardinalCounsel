@@ -29,8 +29,11 @@ class MENTOR_MATCHMAKER {
         if( $mentor_role == 'Mentor' ) {
 
             // Get the arrays of mentees and mentorship requests from user meta
-            $mentees = get_user_meta( $user_id, 'mentees', false );
+            $mentees = get_user_meta( $user_id, 'mentees', true );
+            $mentees = !empty( $mentees ) ? $mentees : array();
             $mentorship_requests = get_user_meta( $user_id, 'mentorship_requests', true );
+
+            var_dump( $mentees );
 
             // If we are responding to a mentorship request
             if( isset( $_POST['accept-mentorship-request'] ) ) {
@@ -46,11 +49,15 @@ class MENTOR_MATCHMAKER {
                     unset( $mentorship_requests[$requestor_index] );
 
                     // Add user id to mentees array and update mentorship_requests meta with new array
-                    update_user_meta( $user_id, 'mentees', $mentee_id );
+                    array_push( $mentees, $mentee_id );
+                    update_user_meta( $user_id, 'mentees', $mentees );
                     update_user_meta( $user_id, 'mentorship_requests', $mentorship_requests );
 
                     // Update the mentees mentor meta value
-                    update_user_meta( $mentee_id, 'mentors', $user_id );
+                    $mentee_mentors = get_user_meta( $mentee_id, 'mentors', true );
+                    $mentee_mentors = !empty( $mentee_mentors ) ? $mentee_mentors : array();
+                    array_push( $mentee_mentors, $user_id );
+                    update_user_meta( $mentee_id, 'mentors', $mentee_mentors );
 
                     // Sloppy method to get mentees array to update with the newly approved mentee
                     wp_redirect( '/index.php/mentor-matchmaker/' );
@@ -284,14 +291,16 @@ class MENTOR_MATCHMAKER {
         // If the current user is a mentee
         if( $mentor_role== 'Mentee' ) {
 
-            $mentors = get_user_meta( $user_id, 'mentors', false );
+            $mentors = get_user_meta( $user_id, 'mentors', true );
+            $mentor_matches = $this->get_mentor_matches( $user_id );
+
             
             ?>
 
             <div class="row mentor-matchmaker" >
 
                 <div class="col-md-12" >
-                    <h4>My Mentor</h4>
+                    <h4>My Mentor(s)</h4>
                 </div>
 
                 <div class="col-md-12" >
@@ -389,15 +398,96 @@ class MENTOR_MATCHMAKER {
 
                     </div>
                 </div>
+
                 <div class="col-md-9" >
-                    <h4>My Top 5 Mentor Matches</h4>
+                    <h4>My Mentor Matches</h4>
                 </div>
                 <div class="col-md-3" >
                     <button class="all_mentors" name="all_mentors" id="all_mentors" >All Mentors</button>
                 </div>
                 <div class="col-md-12" >
+                    <div class="um-members">
+
+                    <div class="um-gutter-sizer"></div>
+
+                    <?php $i = 0;
+                    foreach ( $mentor_matches as $mentor ) {
+
+                        $i++;
+                        um_fetch_user( $mentor['user_id'] ); ?>
+
+                        <div class="um-member um-role-<?php echo esc_attr( um_user( 'role' ) ) . ' ' . esc_attr( um_user('account_status') ); ?> with-cover">
+
+                            <span class="um-member-status <?php echo esc_attr( um_user( 'account_status' ) ); ?>"><?php echo esc_html( um_user( 'account_status_name' ) ); ?></span>
+
+                            <?php 
+
+                            $sizes = UM()->options()->get( 'cover_thumb_sizes' );
+                            if ( UM()->mobile()->isTablet() ) {
+                                $cover_size = $sizes[1];
+                            } else {
+                                $cover_size = $sizes[0];
+                            } ?>
+
+                            <div class="um-member-cover" data-ratio="<?php echo esc_attr( UM()->options()->get( 'profile_cover_ratio' ) ); ?>">
+                                <div class="um-member-cover-e">
+                                    <a href="<?php echo esc_url( um_user_profile_url() ); ?>" title="<?php echo esc_attr( um_user( 'display_name' ) ); ?>">
+                                        <?php echo um_user( 'cover_photo', $cover_size ); ?>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <?php 
+
+                            $corner = UM()->options()->get( 'profile_photocorner' );
+
+                            $default_size = UM()->options()->get( 'profile_photosize' );
+                            $default_size = str_replace( 'px', '', $default_size ); ?>
+
+                            <div class="um-member-photo radius-<?php echo esc_attr( $corner ); ?>">
+                                <a href="<?php echo esc_url( um_user_profile_url() ); ?>" title="<?php echo esc_attr( um_user( 'display_name' ) ); ?>">
+                                    <?php echo get_avatar( um_user( 'ID' ), $default_size ); ?>
+                                </a>
+                            </div>
+
+                            <div class="um-member-card">
+
+                                <div class="um-member-name">
+                                    <a href="<?php echo esc_url( um_user_profile_url() ); ?>" title="<?php echo esc_attr( um_user( 'display_name' ) ); ?>">
+                                        <?php echo um_user( 'display_name', 'html' ); ?>
+                                    </a>
+                                </div>
+                                
+                                <div class="um-member-meta-main">
+
+                                    <?php if ( $userinfo_animate ) { ?>
+                                        <div class="um-member-more"><a href="javascript:void(0);"><i class="um-faicon-angle-down"></i></a></div>
+                                    <?php } ?>
+
+                                    <div class="um-member-meta <?php if ( ! $userinfo_animate ) { echo 'no-animate'; } ?>">
+
+                                        <?php um_fetch_user( $mentor['user_id'] ); ?>
+
+                                        <div class="um-member-metaline um-member-metaline-<?php echo 'percent-match' ?>">
+                                            <span><strong>Interests Match:</strong><br> <?php _e( sprintf("%.2f%%", $mentor['interests_match'] * 100), 'ultimate-member' ); ?></span>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="um-member-less"><a href="javascript:void(0);"><i class="um-faicon-angle-up"></i></a></div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <?php um_reset_user_clean();
+                    } // end foreach
+
+                    um_reset_user(); ?>
+
+                    </div>
                 </div>
-            </div>
 
             <?php
         }
@@ -487,6 +577,53 @@ class MENTOR_MATCHMAKER {
             }
 
         }
+    }
+
+    public function get_mentor_matches( $mentee_id ) {
+
+        // Get the mentees intereests
+        $mentee_interests = get_user_meta( $mentee_id, 'mentor_interests', true );
+
+        // Get all users that are mentors
+        $args = array( 'meta_key' => 'mentor_role', 'meta_value' => 'Mentor' ) ;
+        $mentor_users = get_users( $args );
+
+        // Used to sort percent matched
+        //$interests_match = array();
+
+        // Declare an array that will hold the Mentors ID and his match percentages
+        $mentor_matches = array();
+
+        // Compare all mentors interests to the mentees users interests
+        foreach( $mentor_users as $mentor_user ) {
+
+            $mentor_interests = get_user_meta( $mentor_user->id, 'mentor_interests', true );
+
+            // Counter to calcuate match percentage
+            $match_count = 0;
+
+            foreach( $mentor_interests as $mentor_interest ) {
+
+                if( is_int( array_search( $mentor_interest, $mentee_interests ) ) ) {
+
+                    $match_count++;
+                }
+            }
+
+            // Calculate the match percentage between the mentee and mentor interests
+            $interests_match = $mentor_user->match_percent = number_format( $match_count / ( count( $mentee_interests ) ), 2 );
+
+            // sort the percentages least to greatest
+           // array_push( $mentor_matches, array( 'user_id' => $mentor_user->id, 'interests_match' => $interests_match ) );
+
+            // Create multi-dimensional array of user_id and interests_match to return
+            array_push( $mentor_matches, array( 'user_id' => $mentor_user->id, 'interests_match' => $interests_match ) );
+        }
+
+        array_multisort( array_column( $mentor_matches, 'interests_match' ), SORT_DESC,  $mentor_matches );
+
+        return $mentor_matches;
+
     }
 }
 $MENTOR_MATCHMAKER = new MENTOR_MATCHMAKER();
