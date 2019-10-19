@@ -38,8 +38,8 @@ define( 'DB_CHARSET', 'utf8' );
 define( 'DB_COLLATE', '' );
 
 // Define site URL
-define( 'WP_HOME', 'http://cardinalcounsel.net' );
-define( 'WP_SITEURL', 'http://cardinalcounsel.net' );
+define( 'WP_HOME', 'https://cardinalcounsel.net' );
+define( 'WP_SITEURL', 'https://cardinalcounsel.net' );
 
 // Increase memory limit
 define( 'WP_MEMORY_LIMIT', '1000M' );

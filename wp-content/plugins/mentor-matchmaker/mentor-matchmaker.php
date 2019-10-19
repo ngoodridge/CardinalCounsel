@@ -33,8 +33,6 @@ class MENTOR_MATCHMAKER {
             $mentees = !empty( $mentees ) ? $mentees : array();
             $mentorship_requests = get_user_meta( $user_id, 'mentorship_requests', true );
 
-            var_dump( $mentees );
-
             // If we are responding to a mentorship request
             if( isset( $_POST['accept-mentorship-request'] ) ) {
 
@@ -403,7 +401,7 @@ class MENTOR_MATCHMAKER {
                     <h4>My Mentor Matches</h4>
                 </div>
                 <div class="col-md-3" >
-                    <button class="all_mentors" name="all_mentors" id="all_mentors" >All Mentors</button>
+                    <!--<button class="all_mentors" name="all_mentors" id="all_mentors" >All Mentors</button>-->
                 </div>
                 <div class="col-md-12" >
                     <div class="um-members">

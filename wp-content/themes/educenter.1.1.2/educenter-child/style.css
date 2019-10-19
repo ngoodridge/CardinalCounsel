@@ -30,22 +30,27 @@ div.bottom-header, div.site-content{
     margin-right: auto;
 }
 
-.main-container {
+div#page.site {
+
  min-height: 100vh; /* will cover the 100% of viewport */
- overflow: hidden;
- display: block;
  position: relative;
- padding-bottom: 62px; /* height of your footer */
 }
 
-footer {
+div#content.site-content.content {
 
- position: relative;
- bottom: 0;
- width: 100%;
+    padding-bottom: 62px; /* height of your footer */
+}
+
+#footer {
+
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 62px;      
 }
 
 div.banner-image img {
+
     width: max-content;
     max-width: 1920px;
     max-height: 440px;
@@ -124,4 +129,10 @@ div.donate i {
 div.donate-gift, div.donate-mail {
 
     padding-right: 150px;
+}
+
+div.bottom-footer.clearfix {
+
+    padding-left: 10px;
+    padding-right: 10px;
 }
