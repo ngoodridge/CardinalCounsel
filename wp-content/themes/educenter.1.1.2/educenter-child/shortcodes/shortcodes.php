@@ -62,7 +62,7 @@ class Barkers_Boys_Shortcodes {
                 <div class="donate-paypal" >
                     <i class="fas fa-credit-card" ></i>
                     <p>Give through PayPal.</p>
-                    <?php echo do_shortcode( '[wp_paypal button=donate name=donate ]' ); ?>
+                    <?php echo do_shortcode( '[paypal-donation]' ); ?>
                 </div>
             </div>
             <div class="col-md-6" >

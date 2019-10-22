@@ -136,3 +136,12 @@ div.bottom-footer.clearfix {
     padding-left: 10px;
     padding-right: 10px;
 }
+
+span#bubble_count {
+
+	background-color: #3ba1da;;
+	color: #eee;
+	border-radius: 100%;
+	padding: 0px 4px;
+	text-align: center;
+}
