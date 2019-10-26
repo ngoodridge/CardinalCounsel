@@ -16,8 +16,11 @@ class EDUCENTER_CHILD_THEME {
         // Enqueue scripts/styles
         add_action( 'wp_enqueue_scripts', array( $this, 'wp_enqueue_scripts' ) );
         
-        // Add counter for pending users
+        // Add counter for pending users to WP Admin Bar and clean it up some
         add_action( 'wp_before_admin_bar_render', array( $this, 'wp_before_admin_bar_render') );
+
+        // Add notification bubble counter to the Mentor MatchMaker menu item
+        add_filter( 'wp_nav_menu_items', array( $this, 'wp_nav_menu_items'), 10, 2 );
     }
 
     //Enqueue scripts and styles
@@ -41,6 +44,7 @@ class EDUCENTER_CHILD_THEME {
 
     }
 
+    // Add counter for pending users to WP Admin Bar and clean it up some
     public function wp_before_admin_bar_render() {
 
         global $wp_admin_bar;
@@ -84,6 +88,30 @@ class EDUCENTER_CHILD_THEME {
             $wp_admin_bar->remove_menu( 'edit' );
 
         }
+    }
+
+    // Add notification bubble counter to the Mentor MatchMaker menu item
+    public function wp_nav_menu_items( $items, $args ) {
+
+        // Get the current users ID, and their mentor/mentee role
+        $current_user_id = get_current_user_id();
+        $current_user_mentor_role = get_user_meta( $current_user_id, 'mentor_role', true );
+
+        // Only continue of the current user is capable if recieveing mentorship requests
+        if( $current_user_mentor_role == 'Mentor' ) {
+
+            // Get the Mentors current Mentorship requests and count them 
+            $mentorship_requests = get_user_meta( $current_user_id, 'mentorship_requests', true );
+            $notifcations = count( $mentorship_requests );
+
+            // If the notifications count is greater than 0, show a bubble counter next to the Mentor MatchMaker Menu Item
+            if( $notifcations > 0 ) {
+
+                $items = str_replace( 'Mentor MatchMaker', 'Mentor MatchMaker <span id="bubble_count" style="background-color: red !important;" >' . $notifcations . '</span>', $items );
+            }
+        }
+
+        return $items;
     }
 
 }

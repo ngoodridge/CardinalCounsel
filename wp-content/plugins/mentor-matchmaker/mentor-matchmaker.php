@@ -291,7 +291,6 @@ class MENTOR_MATCHMAKER {
 
             $mentors = get_user_meta( $user_id, 'mentors', true );
             $mentor_matches = $this->get_mentor_matches( $user_id );
-
             
             ?>
 
@@ -397,6 +396,13 @@ class MENTOR_MATCHMAKER {
                     </div>
                 </div>
 
+                <div class="col-md-4" style="font-size: 300px; color:#ad0000;" >
+                    <i class="fas fa-arrow-down"></i>
+                </div>
+                <div class="col-md-8" style="font-size: 75px;" >
+                        <p>Scroll Down to see your top 10 Mentor Matches!</p>
+                </div>
+
                 <div class="col-md-9" >
                     <h4>My Mentor Matches</h4>
                 </div>
@@ -411,7 +417,12 @@ class MENTOR_MATCHMAKER {
                     <?php $i = 0;
                     foreach ( $mentor_matches as $mentor ) {
 
-                        $i++;
+                        // Let's only show the top 10 matches on this page.
+                        if( $i == 10 ) {
+
+                            break;
+                        }
+
                         um_fetch_user( $mentor['user_id'] ); ?>
 
                         <div class="um-member um-role-<?php echo esc_attr( um_user( 'role' ) ) . ' ' . esc_attr( um_user('account_status') ); ?> with-cover">
@@ -468,6 +479,8 @@ class MENTOR_MATCHMAKER {
 
                                         <div class="um-member-metaline um-member-metaline-<?php echo 'percent-match' ?>">
                                             <span><strong>Interests Match:</strong><br> <?php _e( sprintf("%.2f%%", $mentor['interests_match'] * 100), 'ultimate-member' ); ?></span>
+                                            <br>
+                                            <span><strong>Strengths/Weaknesses Match:</strong><br> <?php _e( sprintf("%.2f%%", $mentor['strengths_weaknesses_match'] * 100), 'ultimate-member' ); ?></span>
                                         </div>
 
                                     </div>
@@ -480,6 +493,9 @@ class MENTOR_MATCHMAKER {
                         </div>
 
                         <?php um_reset_user_clean();
+
+                        $i++;
+
                     } // end foreach
 
                     um_reset_user(); ?>
@@ -518,13 +534,12 @@ class MENTOR_MATCHMAKER {
         // Get the mentor role for the logged in user
         $current_user_id = get_current_user_id();
         $current_user_mentor_role = get_user_meta( $current_user_id, 'mentor_role', true);
-        $mentees = get_user_meta( $current_user_id, 'mentees', false);
 
-        // If the profile user is a mentor, the currently logged in user is a mentee, and the profile being viewed isn't the logged in users profile, show the request mentor button
+        // If the profile user is a mentor, the currently logged in user is a mentee,  the profile being viewed isn't the logged in users profile, and the user being viewed is not already a mentor for the logged in user, show the request mentor button
         if( $profile_user_mentor_role == 'Mentor' && $current_user_mentor_role == 'Mentee' && $profile_user_id != $current_user_id ) {
 
             // Get the current users array of mentors
-            $mentors = get_user_meta( $current_user_id, 'mentors', false);
+            $mentors = get_user_meta( $current_user_id, 'mentors', true );
             $mentorship_requests = get_user_meta( $profile_user_id, 'mentorship_requests', true);
 
             // If the meta value is empty, make an array otherwise keep meta value given.
@@ -581,6 +596,8 @@ class MENTOR_MATCHMAKER {
 
         // Get the mentees intereests
         $mentee_interests = get_user_meta( $mentee_id, 'mentor_interests', true );
+        $mentee_strengths = get_user_meta( $mentee_id, 'strengths', true );
+        $mentee_weaknesses = get_user_meta( $mentee_id, 'weaknesses', true );
 
         // Get all users that are mentors
         $args = array( 'meta_key' => 'mentor_role', 'meta_value' => 'Mentor' ) ;
@@ -596,26 +613,42 @@ class MENTOR_MATCHMAKER {
         foreach( $mentor_users as $mentor_user ) {
 
             $mentor_interests = get_user_meta( $mentor_user->id, 'mentor_interests', true );
+            $mentor_strengths = get_user_meta( $mentor_user->id, 'strengths', true );
+            $mentor_weaknesses = get_user_meta( $mentor_user->id, 'weaknesses', true );
 
             // Counter to calcuate match percentage
-            $match_count = 0;
+            $interests_match_count = 0;
+            $strengths_weaknesses_match_count = 0;
+
+            // Index to help on perform one loop instead of 3 
+            $i = 0;
 
             foreach( $mentor_interests as $mentor_interest ) {
 
                 if( is_int( array_search( $mentor_interest, $mentee_interests ) ) ) {
 
-                    $match_count++;
+                    $interests_match_count++;
                 }
+
+                if( is_int( array_search( $mentor_strengths[$i], $mentee_weaknesses ) ) ) {
+
+                    $strengths_weaknesses_match_count++;
+                }
+
+                if( is_int( array_search( $mentor_weaknesses[$i], $mentee_strengths ) ) ) {
+
+                    $strengths_weaknesses_match_count++;
+                }
+
+                $i++;
             }
 
-            // Calculate the match percentage between the mentee and mentor interests
-            $interests_match = $mentor_user->match_percent = number_format( $match_count / ( count( $mentee_interests ) ), 2 );
-
-            // sort the percentages least to greatest
-           // array_push( $mentor_matches, array( 'user_id' => $mentor_user->id, 'interests_match' => $interests_match ) );
+            // Calculate the match percentage between the mentee and mentor interests, and strengths/weaknesses
+            $interests_match = number_format( $interests_match_count / ( count( $mentee_interests ) ), 2 );
+            $strengths_weaknesses_match = number_format( $strengths_weaknesses_match_count / ( count( $mentee_strengths ) + count( $mentor_weaknesses ) ), 2 );
 
             // Create multi-dimensional array of user_id and interests_match to return
-            array_push( $mentor_matches, array( 'user_id' => $mentor_user->id, 'interests_match' => $interests_match ) );
+            array_push( $mentor_matches, array( 'user_id' => $mentor_user->id, 'interests_match' => $interests_match, 'strengths_weaknesses_match' => $strengths_weaknesses_match ) );
         }
 
         array_multisort( array_column( $mentor_matches, 'interests_match' ), SORT_DESC,  $mentor_matches );

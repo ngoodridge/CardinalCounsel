@@ -141,7 +141,7 @@ span#bubble_count {
 
 	background-color: #3ba1da;;
 	color: #eee;
-	border-radius: 100%;
-	padding: 0px 4px;
+	border-radius: 9px;
+	padding: 0px 5px;
 	text-align: center;
 }
