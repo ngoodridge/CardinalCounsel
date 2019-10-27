@@ -15,6 +15,9 @@ class MENTOR_MATCHMAKER {
 
         // Add a new tab to the profile
         add_filter( 'um_after_header_meta', array( $this, 'um_after_header_meta' ), 10, 2 );
+
+        // Create short code to display the end mentorship form
+        add_shortcode( 'end_mentorship_form', array( $this, 'end_mentorship_form') );
     }
 
     public function mentor_matchmaker() {
@@ -589,6 +592,17 @@ class MENTOR_MATCHMAKER {
 
             }
 
+            if( in_array( $profile_user_id, $mentors ) ) {
+
+                ?>
+
+                <form method="post" action="https://cardinalcounsel.net/index.php/end-mentorship-form/" >
+                    <button class="end_mentorship" name="end_mentorship" id="end_mentorship" value="end_mentorship" >End Mentorship</button>
+                </form>
+
+                <?php
+            }
+
         }
     }
 
@@ -602,9 +616,6 @@ class MENTOR_MATCHMAKER {
         // Get all users that are mentors
         $args = array( 'meta_key' => 'mentor_role', 'meta_value' => 'Mentor' ) ;
         $mentor_users = get_users( $args );
-
-        // Used to sort percent matched
-        //$interests_match = array();
 
         // Declare an array that will hold the Mentors ID and his match percentages
         $mentor_matches = array();
@@ -655,6 +666,26 @@ class MENTOR_MATCHMAKER {
 
         return $mentor_matches;
 
+    }
+
+    public function end_mentorship_form() {
+
+        // If ending an existing mentorship connection, let's find out why first.
+        if( isset( $_POST['end_mentorship'] ) ) {
+
+            ?>
+
+            <form method="POST" action="">
+                <p>Were you satisfied with the the mentorship you recieved?</p>
+                <input type="radio" name="mentee_satisfaction" id="satisfied" value="Yes" >
+                <label for="satisfied">Yes</label>
+                <input type="radio" name="mentee_satisfaction" id="dissatisfied" value="No" >
+                <label for="dissatisfied">No</label>
+
+            </form>
+
+            <?php
+        }
     }
 }
 $MENTOR_MATCHMAKER = new MENTOR_MATCHMAKER();
