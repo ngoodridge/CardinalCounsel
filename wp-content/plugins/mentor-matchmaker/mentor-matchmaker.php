@@ -17,7 +17,7 @@ class MENTOR_MATCHMAKER {
         add_filter( 'um_after_header_meta', array( $this, 'um_after_header_meta' ), 10, 2 );
 
         // Create short code to display the end mentorship form
-        add_shortcode( 'end_mentorship_form', array( $this, 'end_mentorship_form') );
+        //add_shortcode( 'end_mentorship_form', array( $this, 'end_mentorship_form') );
     }
 
     public function mentor_matchmaker() {
@@ -580,6 +580,46 @@ class MENTOR_MATCHMAKER {
                 }
             }
 
+            if( isset( $_POST['end_mentorship']) ) {
+
+                // Get the current user's mentors
+                $mentors = get_user_meta( $current_user_id, 'mentors', true );
+
+                // Get the mentor's mentees
+                $mentor_id = $_POST['mentor_id'];
+                $mentees = get_user_meta( $profile_user_id, 'mentees', true );
+
+                // Remove the mentors ID from the mentees mentors array and the mentees id from the mentors array
+                $mentor_index = array_search( $mentor_id, $mentors );
+                unset( $mentors[$mentor_index] );
+                $mentee_index = array_search( $user_id, $mentees );
+                unset( $mentees[$mentee_index] );
+    
+                if( update_user_meta( $current_user_id, 'mentors', $mentors ) && update_user_meta( $profile_user_id, 'mentees', $mentees ) ) {
+    
+                    ?>
+    
+                    <div class="alert alert-success alert-dismissible fade show"  >
+                        <p>Mentorship ended!</p>
+                    </div>
+    
+                    <?php
+    
+                }
+                else {
+    
+                    ?>
+    
+                    <div class="alert alert-danger alert-dismissible fade show" >
+                        <p>Error.  Mentorship not ended.  Please try again or contact and administrator</p>
+                    </div>
+    
+                    <?php
+    
+                }
+            
+            }
+
             if( !in_array( $profile_user_id, $mentors ) && !in_array( $current_user_id, $mentorship_requests ) ) {
 
                 ?>
@@ -596,7 +636,8 @@ class MENTOR_MATCHMAKER {
 
                 ?>
 
-                <form method="post" action="https://cardinalcounsel.net/index.php/end-mentorship-form/" >
+                <form method="post" action="" >
+                    <input type="hidden" name="mentor_id" id="mentor_id" value="<?php echo $profile_user_id; ?>" />
                     <button class="end_mentorship" name="end_mentorship" id="end_mentorship" value="end_mentorship" >End Mentorship</button>
                 </form>
 
@@ -668,25 +709,87 @@ class MENTOR_MATCHMAKER {
 
     }
 
-    public function end_mentorship_form() {
+    /*public function end_mentorship_form() {
+
+        var_dump( $_POST );
+
+        // Get the current user ID
+        $current_user_id = get_current_user_id();
 
         // If ending an existing mentorship connection, let's find out why first.
         if( isset( $_POST['end_mentorship'] ) ) {
 
+            $mentor_id = $_POST['mentor_id'];
+
             ?>
-
             <form method="POST" action="">
-                <p>Were you satisfied with the the mentorship you recieved?</p>
-                <input type="radio" name="mentee_satisfaction" id="satisfied" value="Yes" >
-                <label for="satisfied">Yes</label>
-                <input type="radio" name="mentee_satisfaction" id="dissatisfied" value="No" >
-                <label for="dissatisfied">No</label>
-
+                <div class="row end_mentorship_form" >
+                    <div class="col-md-12" >Were you satisfied with the the mentorship you recieved?</div>
+                    <div class="col-md-3" >
+                        <input type="radio" name="mentee_satisfaction" id="satisfied" value="Yes" >
+                        <label for="satisfied">Yes</label>
+                    </div>
+                    <div class="col-md-3" >
+                        <input type="radio" name="mentee_satisfaction" id="dissatisfied" value="No" >
+                        <label for="dissatisfied">No</label>
+                    </div>
+                    <div class="col-md-6" ></div>
+                    <div class="col-md-12" >If no, please explain why:</div>
+                    <div class="col-md-6" ><textarea name="mentee_reasoning" id="mentee_reasoning" ></textarea></div>
+                    <div class="col-md-6" ></div>
+                    <div class="col-md-12" >Report Mentor to and administrator?</div>
+                    <div class="col-md-3" >
+                        <input type="radio" name="report_mentor" id="report_mentor" value="Yes" >
+                        <label for="report_mentor">Yes</label>
+                    </div>
+                    <div class="col-md-3" >
+                        <input type="radio" name="report_mentor" id="dont_report_mentor" value="No" >
+                        <label for="dont_report_mentor">No</label>
+                    </div>
+                    <div class="col-md-6" ><input type="hidden" name="mentor_id" id="mentor_id" value="<?php echo $mentor_id; ?>" /></div>
+                    <div class="col-md-12" ><button class="btn btn-danger" name="confirm_end_mentorship" value="confirm_end_mentorship" >End Mentorship</button></div>
+                </div>
             </form>
 
             <?php
         }
-    }
+
+        if( isset( $_POST['confirm_end_mentorship'] ) ) {
+
+            // Get the current users mentors
+            $mentors = get_user_meta( $current_user_id, 'mentors', true );
+
+            // Remove the mentors ID from the mentees mentors array
+            $mentor_id = $_POST['mentor_id'];
+            $requestor_index = array_search( $mentor_id, $mentors );
+            unset( $mentors[$requestor_index] );
+
+            if( update_user_meta( $current_user_id, 'mentors', $mentors ) ) {
+
+                ?>
+
+                <div class="alert alert-success alert-dismissible fade show"  >
+                    <p>Mentorship ended!</p>
+                </div>
+
+                <?php
+
+            }
+            else {
+
+                ?>
+
+                <div class="alert alert-danger alert-dismissible fade show" >
+                    <p>Error.  Mentorship not ended.  Please try again or contact and administrator</p>
+                </div>
+
+                <?php
+
+            }
+            
+            
+        }
+    }*/
 }
 $MENTOR_MATCHMAKER = new MENTOR_MATCHMAKER();
 

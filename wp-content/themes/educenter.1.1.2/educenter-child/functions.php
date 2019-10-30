@@ -102,7 +102,7 @@ class EDUCENTER_CHILD_THEME {
 
             // Get the Mentors current Mentorship requests and count them 
             $mentorship_requests = get_user_meta( $current_user_id, 'mentorship_requests', true );
-            $notifcations = count( $mentorship_requests );
+            $notifcations = is_array( $mentorship_requests ) ? count( $mentorship_requests ) : 0;
 
             // If the notifications count is greater than 0, show a bubble counter next to the Mentor MatchMaker Menu Item
             if( $notifcations > 0 ) {
