@@ -49,13 +49,19 @@ div#content.site-content.content {
     height: 62px;      
 }
 
+div.banner-image {
+
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+}
+
 div.banner-image img {
 
-    width: max-content;
-    max-width: 1920px;
-    max-height: 440px;
-    overflow: visible;
-    margin-left: -328px;
+    width: 100%;
 }
 
 section.ed-about-us {

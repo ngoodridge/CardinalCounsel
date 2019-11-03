@@ -703,7 +703,8 @@ class MENTOR_MATCHMAKER {
             array_push( $mentor_matches, array( 'user_id' => $mentor_user->id, 'interests_match' => $interests_match, 'strengths_weaknesses_match' => $strengths_weaknesses_match ) );
         }
 
-        array_multisort( array_column( $mentor_matches, 'interests_match' ), SORT_DESC,  $mentor_matches );
+        //array_multisort( array_column( $mentor_matches, 'strengths_weaknesses_match' ), SORT_DESC,  $mentor_matches );
+        array_multisort( array_column( $mentor_matches, 'interests_match' ), SORT_DESC ,array_column( $mentor_matches, 'strengths_weaknesses_match' ), SORT_DESC, $mentor_matches );
 
         return $mentor_matches;
 
